@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carousel Swiper Sempurna</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* ========================================================== */
+        /* CSS BARU: IKON MEDIA SOSIAL (ATAS KIRI)                    */
+        /* ========================================================== */
+        .social-top-left {
+            position: absolute; /* Duduk di atas mengikut susunan halaman */
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 12px;
+            z-index: 100; /* Memastikan ia berada di lapisan paling atas */
+        }
+
+        .social-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 18px;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, background-color 0.2s ease;
+        }
+
+        /* Warna jenama Facebook */
+        .social-icon.facebook {
+            background-color: #1877F2;
+        }
+
+        /* Warna jenama TikTok */
+        .social-icon.tiktok {
+            background-color: #010101;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.1);
+            color: #ffffff;
+        }
+
+        /* Mengatur ukuran kotak utama slider - Ditambah margin-top sedikit supaya tidak bertembung dengan icon atas kiri */
+        .swiper {
+            width: 100%;
+            height: 450px; 
+            max-width: 800px;
+            margin: 80px auto 30px auto; /* Margin atas dibesarkan ke 80px */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+        }
+
+        /* Memastikan slide membenarkan susunan elemen di dalamnya */
+        .swiper-slide {
+            background: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Bekas kandungan (Gambar + Teks) */
+        .slide-content {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Mengatur gambar supaya penuh dan tidak herot */
+        .slide-content img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Gaya teks di kaki gambar */
+        .slide-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.65); 
+            color: #ffffff; 
+            padding: 15px;
+            font-size: 16px;
+            font-family: sans-serif;
+            text-align: center;
+            box-sizing: border-box;
+            z-index: 10;
+        }
+
+        /* Warna butang panah kiri/kanan */
+        .swiper-button-next, .swiper-button-prev {
+            color: #ffffff;
+        }
+
+        /* Warna titik penunjuk di bawah */
+        .swiper-pagination-bullet-active {
+            background: #ffffff;
+        }
+
+        /* ========================================================== */
+        /* KOTAK INFO MENEGAK, SUSUNAN MELINTANG                      */
+        /* ========================================================== */
+
+        /* Bekas utama untuk susunan melintang */
+        .info-container {
+            max-width: 950px;      
+            margin: 50px auto;     
+            display: flex;         
+            flex-direction: row;   
+            justify-content: center;
+            gap: 15px;             
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        /* Gaya setiap kotak - Diubah suai sedikit untuk hilangkan hiasan link bawaan <a> */
+        .info-card {
+            background: #ffffff;
+            border-top: 5px solid #3498db; 
+            padding: 20px 15px;
+            border-radius: 0 0 8px 8px;    
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            flex: 1;                       
+            min-width: 150px;              
+            display: flex;
+            flex-direction: column;        
+            text-align: center;            
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none; /* Mengelakkan teks bergaris di bawah */
+        }
+
+        .info-card:hover {
+            transform: translateY(-8px);  
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .info-card h3 {
+            margin: 0 0 12px 0;
+            color: #2c3e50;
+            font-family: sans-serif;
+            font-size: 16px;
+        }
+
+        .info-card p {
+            margin: 0;
+            color: #7f8c8d;
+            font-family: sans-serif;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* ========================================================== */
+        /* KOTAK PRODUK SAMPINGAN (GRID)                              */
+        /* ========================================================== */
+        
+        .section-title {
+            text-align: center;
+            font-family: sans-serif;
+            color: #2c3e50;
+            margin: 60px 0 20px 0;
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
+
+        .product-grid {
+            max-width: 950px;
+            margin: 0 auto 60px auto;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr); 
+            gap: 15px;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+
+        /* Dijadikan tag <a> supaya keseluruhan kad grid boleh diklik */
+        .product-card {
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            text-decoration: none; /* Mengelakkan teks bergaris di bawah */
+        }
+
+        .product-card:hover {
+            transform: scale(1.03); 
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        }
+
+        .product-img-box {
+            width: 100%;
+            height: 150px;
+            background: #f5f5f5;
+        }
+
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 12px;
+            text-align: center;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            flex-grow: 1;
+        }
+
+        .product-info h4 {
+            margin: 0 0 8px 0;
+            font-size: 14px;
+            color: #34495e;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 15px;
+            font-weight: bold;
+            color: #e74c3c; 
+            margin: 0;
+        }
+
+        /* ========================================================== */
+        /* UNTUK TULISAN MAKLUMAT COD BERKELIP                        */
+        /* ========================================================== */
+        .cod-notice-container {
+            text-align: center;
+            font-family: sans-serif;
+            max-width: 900px;
+            margin: 60px auto 10px auto;
+            padding: 0 15px;
+        }
+
+        .cod-notice-title {
+            color: #2c3e50;
+            font-size: 20px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+
+        .cod-notice-blink {
+            color: #16a085; 
+            font-size: 16px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            line-height: 1.5;
+            animation: efekBerkelip 1.2s infinite; 
+        }
+
+        @keyframes efekBerkelip {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* ========================================================== */
+        /* CSS UNTUK BUTANG WHATSAPP TERAPUNG                         */
+        /* ========================================================== */
+        .whatsapp-float {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            color: #FFF;
+            border-radius: 50px;
+            text-align: center;
+            font-size: 30px;
+            box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            color: #FFF;
+        }
+
+        /* RESPONSIVE: Aturan untuk paparan skrin Phone/Sempit */
+        @media (max-width: 768px) {
+            .social-top-left {
+                top: 15px;
+                left: 15px;
+                gap: 8px;
+            }
+            .social-icon {
+                width: 35px;
+                height: 35px;
+                font-size: 15px;
+            }
+            .swiper {
+                margin: 70px auto 30px auto; /* Kekalkan jarak yang baik di phone */
+            }
+            .info-container {
+                flex-direction: column;
+            }
+            .info-card {
+                border-top: none;
+                border-left: 5px solid #3498db;
+                border-radius: 0 8px 8px 0;
+            }
+            .info-card:hover {
+                transform: translateX(5px);
+            }
+            
+            .product-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .cod-notice-title {
+                font-size: 18px;
+            }
+            .cod-notice-blink {
+                font-size: 14px;
+            }
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 15px;
+                right: 15px;
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="social-top-left">
+        <a href="https://www.facebook.com/share/1979C3R4Tp/?mibextid=wwXIfr" class="social-icon facebook" target="_blank" title="Facebook Kami">
+            <i class="fab fa-facebook-f"></i>
+        </a>
+        <a href="https://www.tiktok.com/@juliana_sapean?_r=1&_t=ZS-96vudsNXdjh" class="social-icon tiktok" target="_blank" title="TikTok Kami">
+            <i class="fab fa-tiktok"></i>
+        </a>
+    </div>
+
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="Image/images.png" alt="Gambar 1">
+                    <div class="slide-caption"> JL FARA COFFEE * SKINNY Coffee</div>
+                </div>
+            </div>
+            
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="Image/images2.png" alt="Gambar 2">
+                    <div class="slide-caption">White Horse Gluta Coffee Premix Horse Milk Slimming</div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="Image/images3.png" alt="Gambar 3">
+                    <div class="slide-caption">MIN KAFFEE. KOPI PRACAMPURAN GARAM BULUH</div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="Image/images4.png" alt="Gambar 4">
+                    <div class="slide-caption">WHITE HORSE GLUTA, SET KRIM PENJAGAAN WAJAH</div>
+                </div>
+            </div>
+
+            <div class="swiper-slide">
+                <div class="slide-content">
+                    <img src="Image/images5.jpeg" alt="Gambar 5">
+                    <div class="slide-caption">JUHARA ZEN Perfume</div>
+                </div>
+            </div>
+
+        </div>
+        
+        <div class="swiper-pagination"></div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+    </div> 
+
+    <div class="info-container">
+        <a href="detail.html#hotsale-1" class="info-card">
+            <h3>JL FARA COFFEE</h3>
+            <p>Kopi kurus premium keluaran White Horse Gluta. Dirumus dengan 9 bahan aktif — bakar lemak, cerah kulit, beri tenaga.Lulus KKM, rasa kopi sebenar, sihat & cantik setiap hari..</p>
+            <p class="product-price" style="margin-top: 12px; margin-bottom: 0; line-height: 1.3;">RM 39.90 <br>
+            <span style="font-size: 13px; color: #7f8c8d; font-weight: normal;">12 sachet setiap satu kotak</span></p>
+        </a>
+
+        <a href="detail.html#hotsale-2" class="info-card">
+            <h3>White Horse Coffee</h3>
+            <p>White Horse Gluta Coffee Kopi susu kuda premium dengan Gluta.Bantu metabolisme, tenaga & pencerahan kulit.Kurus · Gebu · Bertenaga  Rasa kopi vanila lembut.12 Sachet × 25g | MOH Certified</p>
+            <p class="product-price" style="margin-top: 12px; margin-bottom: 0; line-height: 1.3;">RM 35.50 <br>
+            <span style="font-size: 13px; color: #7f8c8d; font-weight: normal;">20 sachet setiap satu kotak</span></p>
+        </a>
+
+        <a href="detail.html#hotsale-3" class="info-card">
+            <h3>MIN KAFFEE </h3>
+            <p>Kopi pracampur dengan Garam Buluh.Sumber Magnesium untuk tenaga & kesihatan.Rasa kopi premium, segar & menyegarkan.20 Sticks × 12g | Produk Tempatan</p>
+            <p class="product-price" style="margin-top: 12px; margin-bottom: 0; line-height: 1.3;">RM 35.50 <br>
+            <span style="font-size: 13px; color: #7f8c8d; font-weight: normal;">20 sachet setiap satu kotak</span></p>
+        </a>
+
+        <a href="detail.html#hotsale-4" class="info-card">
+            <h3>Krim Penjagaan Wajah</h3>
+            <p>Dihasilkan oleh WHITE HORSE GLUTA, rangkaian ini mudah dibawa, bersaiz kompak dan tampil mewah dengan harga berpatutan. Pilihan sempurna untuk kulit sihat dan berseri setiap hari.</p>
+            <p class="product-price" style="margin-top: 12px; margin-bottom: 0; line-height: 1.3;">RM 39.00 <br>
+            <span style="font-size: 13px; color: #7f8c8d; font-weight: normal;">Setiap satu kotak</span></p>
+        </a>
+
+        <a href="detail.html#hotsale-5" class="info-card">
+            <h3>JZ Perfume</h3>
+            <p>Wangian tempatan premium dari Sarawak.Harga mampu milik RM10–RM50.EDP tahan lama, sesuai lelaki & wanita.Sejak 2017, laris & COD Samarahan.</p>
+            <p class="product-price" style="margin-top: 12px; margin-bottom: 0; line-height: 1.3;">RM 10.00 <br>
+            <span style="font-size: 13px; color: #7f8c8d; font-weight: normal;">Sebotol 10ml</span></p> 
+        </a>
+    </div>
+
+    <div class="cod-notice-container">
+        <div class="cod-notice-title">CAJ PENGHANTARAN RM5 BAGI SETIAP LOKASI DI SAMARAHAN & KUCHING</div>
+        <div class="cod-notice-blink">Perkhidmatan Cash on Delivery (COD) disediakan. Penghantaran hanya pada malam Selasa dan malam Rabu.</div>
+    </div>
+    
+    <h2 class="section-title">PRODUK SAMPINGAN KAMI</h2>
+    
+    <div class="product-grid">
+        
+        <a href="detail.html#sampingan-1" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/sideBV-ALFAFA.jpg" alt="Produk 1">
+            </div>
+            <div class="product-info">
+                <h4>ALFALFA CONCENTRATE 500ML</h4>
+                <p class="product-price">RM 92.40</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-2" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/Bio Seleza 4 in 1.jpg" alt="Produk 2">
+            </div>
+            <div class="product-info">
+                <h4>BIO SELEZA F. PAD (PREMIUM) - 4 IN 1 MIXED</h4>
+                <p class="product-price">RM 104.00</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-3" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/MinCha.jpg" alt="Produk 3">
+            </div>
+            <div class="product-info">
+                <h4>MIN CHA ENHANCED</h4>
+                <p class="product-price">RM 39.60</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-4" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/MEBB 3pcs WEB.jpg" alt="Produk 4">
+            </div>
+            <div class="product-info">
+                <h4>MARINE ESSENCE BEAUTY BAR (3 PCS)</h4>
+                <p class="product-price">RM 113.20</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-5" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/Nutrilite Multivitamin.jpg" alt="Produk 5">
+            </div>
+            <div class="product-info">
+                <h4>MULTIVITAMIN & MULTIMINERAL TABLET</h4>
+                <p class="product-price">RM 79.00</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-6" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/frontPuriC.jpg" alt="Produk 6">
+            </div>
+            <div class="product-info">
+                <h4>NURICH PURI-C</h4>
+                <p class="product-price">RM 90.00</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-7" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/ikonrepair6.png" alt="Produk 7">
+            </div>
+            <div class="product-info">
+                <h4>Free Parking</h4>
+                <p class="product-price">RM 00.00</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-8" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/ikonrepair6.png" alt="Produk 8">
+            </div>
+            <div class="product-info">
+                <h4>Free Parking</h4>
+                <p class="product-price">RM 00.00</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-9" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/Nurich Garlic.jpg" alt="Produk 9">
+            </div>
+            <div class="product-info">
+                <h4>NURICH GARLIC 300MG</h4>
+                <p class="product-price">RM 58.80</p>
+            </div>
+        </a>
+
+        <a href="detail.html#sampingan-10" class="product-card">
+            <div class="product-img-box">
+                <img src="Image/MARINE ESSENCE.jpg" alt="Produk 10">
+            </div>
+            <div class="product-info">
+                <h4>MARINE ESSENCE NOURISHING SHAMPOO</h4>
+                <p class="product-price">RM 35.80</p>
+            </div>
+        </a>
+
+    </div>
+
+    <a href="https://wa.me/601125015882?text=Hai,%20saya%20berminat%20nak%20tahu%20lebih%20lanjut%20tentang%20produk%20kopi%20dan%20perfume%20anda." class="whatsapp-float" target="_blank">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        const swiper = new Swiper('.mySwiper', {
+            effect: 'cube',
+            speed: 1500,
+            loop: true,
+            autoplay: {
+                delay: 3000,
+                disableOnInteraction: false,
+            },
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+            navigation: {
+                nextEl: '.swiper-button-next',
+                prevEl: '.swiper-button-prev',
+            },
+        });
+    </script>
+</body>
+</html>
